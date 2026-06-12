@@ -1,0 +1,1209 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{enumitem}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+\setlist[enumerate]{left=2em}
+\setlist[itemize]{left=2em}
+
+
+\title{DD \\ [0.5ex] \small v1}
+\author{Francesco Gangi, Denis Sanduleanu}
+\date{December 24, 2024}
+
+\begin{document}
+
+\maketitle
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+
+\subsection{Purpose}
+
+This document contains the design description of the Students\&Companies system. It includes the architectural design, the user interface design and the description of all the operations that the system will perform. It also shows how the requirements and use cases detailed in the RASD are satisfied by the design of the system.
+This document is intended to be read by the developers of the system, the testers and the project managers. It is also intended to be used as a reference for the future maintenance of the system.
+
+\subsection{Scope}
+
+S\&C is a system that helps university students and companies to find a perfect match for potential internship positions. From the student perspective, through this platform it's possible to search for internships, apply for them and go through interviews directly with companies in order to start an internship. On the other hand, from companies perspective, it's possible to publish new internship opportunities, find suitable profiles for your published internships and have a direct contact with interested students. A more detailed description of the system can be found in the RASD, while the aim of this document is to explain thoroughly how to build the actual system in order to fulfill the requirements and use cases mentioned in the other document. It'll describe the actual structure of the system and give a detailed view of how all the components work together.
+
+\subsection{Definitions, Acronyms, Abbreviations}
+
+%\subsubsection{Definitions}
+
+\subsubsection{Acronyms}
+
+\begin{itemize}
+    \item \textbf{S\&C}: Students\&Companies
+    \item \textbf{HR}: Human Resources
+    \item \textbf{CV}: Curriculum Vitae
+\end{itemize}
+
+%\subsubsection{Abbreviations}
+
+\subsection{Revision History}
+
+\begin{itemize}
+    \item \textbf{Version 1.0} (Dec. 24, 2024)
+\end{itemize}
+
+\subsection{Reference Documents}
+
+\begin{itemize}
+    \item \textbf{Assignment Document} (Assignment RASD\&DD A.Y. 2024-2025)
+    \item \textbf{Course Slides} (Software Engineering 2 A.Y. 2024-2025)
+\end{itemize}
+
+\subsection{Document Structure}
+
+\begin{enumerate}
+    \item \textbf{Introduction}: it aims to give a brief recap of the description of the project explained in detail in the RASD.
+    \item \textbf{Architectural Design}: this section provides a description of the architecture of the system, including the components and the interfaces between them. It also includes the runtime view of the most important operations of the system, the deployment view and the architectural styles and patterns used in the system.
+    \item \textbf{User Interface Design}: it includes the mock-ups of the application user interfaces, already mentioned in the RASD.
+    \item \textbf{Requirements Traceability}: it describes the connections between the requirements defined in the RASD and the components described in the first chapter. This is used as proof that the design decisions have been taken with respect to the requirements, and therefore that the designed system can fulfill the goals.
+    \item \textbf{Implementation, Integration and Test Plan}: it describes the process of implementation, integration and testing to which developers have to stick in order to develop the system in a correct way.
+    \item \textbf{Effort spent}: it shows the time spent to realize this document organized by sections.
+    \item \textbf{References}: it contains the references to any documents and software used in this document.
+\end{enumerate}
+
+\newpage
+
+\section{Architectural Design}
+
+\subsection{Overview}
+
+In Students\&Companies architecture we will take advantage of a canonical three-tier architecture composed by the following layers: \textbf{Client}, \textbf{Server} and \textbf{DBMS}. The \textbf{Client} (\textit{Presentation Layer}) is the one that interacts with the user, showing the user interface and receiving the user inputs. The \textbf{Server} (\textit{Application Layer}) is the one that manages the business logic of the system, it receives the inputs from the Client, processes them and sends the results to the DBMS. The \textbf{DBMS} (\textit{Data Layer}) is the one that manages the data of the system, it receives the inputs from the Application Layer, processes them and sends the results back to the Application Layer. The DBMS is also responsible for the communication with the database.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{DD/files/Views/highlevelview.jpg}
+    \caption*{High-level view of the Architecture}
+\end{figure}
+
+\newpage
+v
+\subsection{Component view}
+
+Here are listed the components described in the following view with their own use and description.\newline
+
+    \begin{flushleft}
+        \textbf{\large{Application Layer}}
+    \end{flushleft}
+    \begin{itemize}
+        \item \textbf{Dashboard Manager}: it provides the functionalities to interact with a personal dashboard by a user.
+
+        \item \textbf{Authentication Service}: it provides the procedures that make the authentication of a given user possible.
+
+        \item \textbf{Notification Service}: it handles the interactions with a mail provider and how to notify users within the application.
+
+        \item \textbf{Internship Manager}: it handles the internships by a given user and interacts with the \textbf{\textit{Application Manager}} to manage every ongoing internship singularly.
+
+        \item \textbf{Application Manager}: it allows to individually monitor the progress of an ongoing internship and deal with all of the potential problems or complaints within it.
+
+        \item \textbf{Data Manager}: it's the crucial component needed for data exchange between \textbf{\textit{Data Layer}} and \textbf{\textit{Application Layer}} and it basically interacts with every other component within the \textbf{\textit{Server}}.
+    \end{itemize}
+
+    \begin{flushleft}
+        \textbf{\large{Presentation Layer}}
+    \end{flushleft}
+    \begin{itemize}
+        \item \textbf{Client}: it represents the front-end side of the application and can be accessed through a generic web browser. Through the \textbf{\textit{Authentication Interface}} it's possible to access to a given user page and all of the different operations are possible due to the \textbf{\textit{Dashboard Interface}}.
+    \end{itemize}
+
+    \begin{flushleft}
+        \textbf{\large{Data Layer}}
+    \end{flushleft}
+    \begin{itemize}
+        \item \textbf{DBMS}: the component needed to access and manages transactions between the database and the other layers of the three-tier architecture.
+    \end{itemize}
+
+    \begin{flushleft}
+        \textbf{\large{Other services}}
+    \end{flushleft}
+    \begin{itemize}
+        \item \textbf{Mail Server}: it's needed to exchange emails between the application actors.
+
+        \item \textbf{Recommendation Server}: the tool that is in charge of recommending suitable internships to students, as well as suitable students to companies. It consists of a \textbf{\textit{Preprocessor}} that manages all of the data and a \textbf{\textit{Evaluator Controller}} that actually takes account of the ratings and other statistics within the application in order to generate a proper recommendation.
+    \end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.5\linewidth, angle=90]{DD/files/Views/componentview.jpg}
+    \caption*{Component view}
+\end{figure}
+
+\newpage
+
+\subsection{Deployment view}
+
+In this section it's shown the deployment of the system. The overall architecture, including the Recommendation Tool, becomes a four-tier architecture. The \textbf{Client} layer represents the web browser through which it's possible to access the application for a user. The \textbf{Server} is the layer that keeps all of the information about the application and manages all the interactions with other components such as external services or the database.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{DD/files/Views/deploymentview.jpg}
+    \caption*{Deployment view}
+\end{figure}
+
+\newpage
+
+\subsubsection{Firewall}
+In order to protect the application from external attacks or vulnerabilities, the best approach was to use firewalls to filter both incoming and outgoing traffic. It was chosen to use one between \textbf{\textit{Client}} and \textbf{\textit{Server}}, one between \textbf{\textit{Server}} and \textbf{\textit{Recommendation Server}} and the last one between \textbf{\textit{Server}} and \textbf{\textit{Database Server}}.
+
+\subsubsection{Load Balancing}
+Since the application is going to run on replicated servers we want to ensure that users are equally partitioned between different replicas. In order to ensure that, we used two load balancers: one of them can be found between \textbf{\textit{Client}} and \textbf{\textit{Server}}, while the other one is located between \textbf{\textit{Server}} and \textbf{\textit{Recommendation Server}}.
+
+\newpage
+
+\subsection{Runtime view}
+
+In this section are shown the sequence diagrams of the most important operations of the system. The diagrams show the interactions between the components of the system and how they work together to achieve the desired result.
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{User Sign Up}}
+\end{flushleft}
+
+When a user wants to sign up to the application, the \textbf{\textit{Client}} sends a request to the \textbf{\textit{Authentication Service}}. The \textbf{\textit{Authentication Service}} checks if the user is already registered, if not it sends the user information to the \textbf{\textit{Data Manager}} that stores the information in the database. The system checks for activation and sends an email to the user to activate the account. Finally, it returns the homepage to the user.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{DD/files/SequenceDiagrams/UserSignup.png}
+    \caption*{User Sign Up}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{User Login}}
+\end{flushleft}
+
+
+When a user wants to log in to the application, the \textbf{\textit{Client}} sends a request to the \textbf{\textit{Authentication Service}}. The \textbf{\textit{Authentication Service}} checks if the user is registered and if the credentials are correct. If the credentials are correct, the system returns the homepage to the user.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{DD/files/SequenceDiagrams/UserLogin.png}
+    \caption*{User Login}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Internships Recommendation}}
+\end{flushleft}
+
+When a Student enters on S\&C, the \textit{\textbf{Dashboard Manager}} requests to the \textit{\textbf{Evaluator Controller}} the recommended Internships to be shown to the Student. The \textbf{Preprocessor} is used to pre-process the data in order to be correctly fed to the machine learning algorithms of the Evaluator Controller.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{DD/files/SequenceDiagrams/InternshipsRecommendation.png}
+    \caption*{Internships Recommendation}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Students Recommendation}}
+\end{flushleft}
+
+Similarly to what is done in Internship Recommendation, when a Company logs into S\&C, machine learning algorithms from the \textit{\textbf{Evaluator Controller}} are used in order to recommend interesting Students for their Internships.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{DD/files/SequenceDiagrams/CV Recommendations.png}
+    \caption*{Students Recommendation}
+\end{figure}
+
+
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Load CV}}
+\end{flushleft}
+
+When a student wants to load his CV, the \textbf{\textit{Client}} sends a request to the \textbf{\textit{Data Manager}}. The system checks if the CV file format is correct and stores the CV in the database. Finally, it returns the loaded CV to the student.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{DD/files/SequenceDiagrams/LoadCV.png}
+    \caption*{Load CV}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Internship Application}}
+\end{flushleft}
+
+When a student wants to apply for an internship, the \textbf{\textit{Client}} sends a request to the \textbf{\textit{Dashboard Manager}} by searching for internships. The request goes through the \textbf{\textit{Evaluator Controller}} that provides the student with a list of suggested internships. The student selects an internship and sends the application to the \textbf{\textit{Application Manager}}. The system checks if the student has already applied for that internship and if not, it stores the application in the database. Finally, it returns the application status to the student.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{DD/files/SequenceDiagrams/InternshipApplication.png}
+    \caption*{Internship Application}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Internship Creation}}
+\end{flushleft}
+
+When a company wants to create an internship, the \textbf{\textit{Client}} sends a request to the \textbf{\textit{Dashboard Manager}}. The request is then sent to the \textbf{\textit{Internship Manager}} that stores the internship in the database. The system checks if the internship has been created successfully and returns the internship status to the company.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{DD/files/SequenceDiagrams/InternshipCreation.png}
+    \caption*{Internship Creation}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Accept Internship}}
+\end{flushleft}
+
+When a student wants to accept an internship from the ones they applied for, the \textbf{\textit{Client}} sends a request to the \textbf{\textit{Dashboard Manager}}. The request is then sent to the \textbf{\textit{Application Manager}} that stores the selection in the database. The \textbf{\textit{Notification Service}} sends an email to the company to notify them about the student's acceptance. Finally, the system returns the internship status to the student.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{DD/files/SequenceDiagrams/AcceptInternship.png}
+    \caption*{Accept Internship}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Student Complaint}}
+\end{flushleft}
+
+
+When a student wants to complain about an internship, the \textbf{\textit{Client}} sends a request to the \textbf{\textit{Dashboard Manager}}. The request is then sent to the \textbf{\textit{Internship Manager}} that checks if there's an ongoing internship and stores the complaint in the database. Finally, the system returns the complaint status to the student.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{DD/files/SequenceDiagrams/StudentComplains.png}
+    \caption*{Student complains during Internship}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Company Complaint}}
+\end{flushleft}
+
+
+When a company wants to complain about a student, the \textbf{\textit{Client}} sends a request to the \textbf{\textit{Dashboard Manager}}. The request is then sent to the \textbf{\textit{Internship Manager}} that checks if there's an ongoing internship and stores the complaint in the database. Finally, the system returns the complaint status to the company.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{DD/files/SequenceDiagrams/CompanyComplains.png}
+    \caption*{Company complains during Internship}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Questionnaire Creation}}
+\end{flushleft}
+
+When a company wants to create a questionnaire for an internship, the \textbf{\textit{Client}} sends a request to the \textbf{\textit{Dashboard Manager}}. The request is then sent to the \textbf{\textit{Internship Manager}} that stores the questionnaire in the database. After publishing the questionnaire, the \textbf{\textit{Notification Service}} sends an email only to students that applied for that internship to notify them about the questionnaire. Finally, the system returns the questionnaire status to the company.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{DD/files/SequenceDiagrams/PostQuestionnaire.png}
+    \caption*{Post Questionnaire}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Student's Feedback Submission}}
+\end{flushleft}
+
+When a student wants to submit feedback about an internship, the \textbf{\textit{Client}} sends a request to the \textbf{\textit{Dashboard Manager}}. The request is then sent to the \textbf{\textit{Internship Manager}} that retrieves the internships the student has been part of and the student selects the internship to provide feedback for. The system stores the feedback in the database and returns the feedback status to the student.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{DD/files/SequenceDiagrams/StudentProvidesFeedback.png}
+    \caption*{Student provides Feedback}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Company's Feedback Submission}}
+\end{flushleft}
+
+When a company wants to submit feedback about a student, the \textbf{\textit{Client}} sends a request to the \textbf{\textit{Dashboard Manager}}. The request is then sent to the \textbf{\textit{Internship Manager}} that retrieves the internships the company has created selecting the one that has finished. The company provides feedback about every student that has been part of the internship and the system stores the feedback in the database. Finally, the system returns the feedback status to the company.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{DD/files/SequenceDiagrams/CompanyProvidesFeedback.png}
+    \caption*{Company provides Feedback}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Student Selection}}
+\end{flushleft}
+
+When a company wants to select a student for an internship, the \textbf{\textit{Client}} sends a request to the \textbf{\textit{Dashboard Manager}}. The request is then sent to the \textbf{\textit{Internship Manager}} that retrieves the internships the company has created and returns the internships to the company. If a given internship has not exceeded its deadline, the company ranks the students that applied for that internship and selects them as long as there are available positions. The system stores the selection in the database and returns the selection status to the company, while the \textbf{\textit{Notification Service}} sends out notifications to inform accepted students about the outcome of the selection process. Otherwise, if an internship is already expired, the system retrieves the list of rejected students and notifies every of them about rejection.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{DD/files/SequenceDiagrams/StudentSelection.png}
+    \caption*{Student Selection}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{University Monitors Internship}}
+\end{flushleft}
+
+\begin{flushleft}
+    When a university wants to monitor an internship, the \textbf{\textit{Client}} sends a request to the textbf{\textit{Dashboard Manager}}. The request is then sent to the \textbf{\textit{Internship Manager}} that retrieves the students that have been part of an internship and selects a student to monitor. The system checks if there's an ongoing internship and retrieves information about a given student with an ongoing internship. Finally, the system returns the student's internship progress to the university.
+\end{flushleft}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{DD/files/SequenceDiagrams/UniversityMonitors.png}
+    \caption*{University monitors internship}
+\end{figure}
+
+
+\newpage
+
+
+\subsection{Component interfaces}
+\subsubsection{Authentication Service}
+\textit{Authentication Interface}
+
+\begin{itemize}
+    \item \texttt{bool register(u:UserInfo)}
+    \item \texttt{bool login(email:String, password: String)}
+\end{itemize}
+
+
+\subsubsection{Dashboard Manager}
+
+\textit{Dashboard Interface}
+\begin{itemize}
+    \item \texttt{DashboardInfo getDashboardInfo(u:User)}
+    \item \texttt{List[Internship] getMyInternships(c:Company)}
+    \item \texttt{List[Internship] getMyInternships(s:Student)}
+    \item \texttt{Internship getInternshipPage(internship:String)}
+    \item \texttt{Internship getInternshipInfo(admin:Company, internship:String)}
+    \item \texttt{bool addQuestionnaire(q:Questionnaire)}
+    \item \texttt{bool selectStudent(student:String)}
+    \item \texttt{List[Application] getMyApplications(s:Student)}
+    \item \texttt{Application getApplicationInfo(application:String)}
+    \item \texttt{bool accept(s:Student, a:Application)}
+    \item \texttt{bool addComplaint(c:Company, form:ComplaintAboutStudent)}
+    \item \texttt{bool submit(c:Company, form:FeedbackOfStudent)}
+    \item \texttt{bool submit(s:Student, form:FeedbackOfInternship)}
+    \item \texttt{List[Internship] searchInternships(name:String, keywords:List[String])}
+    \item \texttt{bool apply(s:Student, i:Internship)}
+    \item \texttt{bool createInternship(internshipForm:List[String])}
+    \item \texttt{bool addComplaint(s:Student,c:ComplaintAboutInternship)}
+\end{itemize}
+
+
+\subsubsection{Internship Manager}
+\textit{Internship Interface}
+\begin{itemize}
+    \item \texttt{List[Internship] getMyInternships(c:Company)}
+    \item \texttt{List[Internship] getMyInternships(s:Student)}
+    \item \texttt{Internship getInternshipPage(internship:String)}
+    \item \texttt{Internship getInternshipInfo(admin:Company, internship:String)}
+    \item \texttt{List[Application] getRanking(availableInternship:Internship)}
+    \item \texttt{bool selectStudent(s:Student, i:Internship)}
+    \item \texttt{bool submit(c:Company, form:FeedbackOfStudent)}
+    \item \texttt{bool submit(s:Student, form:FeedbackOfInternship)}
+    \item \texttt{bool addComplaint(c:Company, form:ComplaintAboutStudent)}
+    \item \texttt{bool addComplaint(s:Student, c:ComplaintAboutInternship)}
+    \item \texttt{bool addQuestionnaire(q:Questionnaire)}
+    \item \texttt{bool createInternship(internshipForm:List[String])}
+    \item \texttt{bool acceptStudent(s:Student, i:Internship)}
+    \item \texttt{bool notifyQuestionnaire(i:Internship)}
+\end{itemize}
+
+\subsubsection{Application Manager}
+\textit{Application Interface}
+\begin{itemize}
+    \item \texttt{bool selectStudent(a:Application)}
+    \item \texttt{bool rejectStudent(a:Application)}
+    \item \texttt{bool apply(s:Student,i:Internship)}
+    \item \texttt{List[Application] getMyApplications(s:Student)}
+    \item \texttt{Application getApplicationInfo(application:String)}
+\end{itemize}
+
+\subsubsection{Notification Service}
+
+\textit{GeneralNotification Interface}
+
+\begin{itemize}
+    \item \texttt{bool sendActivation(u:User)}
+\end{itemize}
+
+\begin{flushleft}
+    \textit{InternshipNotification Interface}
+\end{flushleft}
+
+\begin{itemize}
+    \item \texttt{bool notifySelectedStudent(s:Student, i:Internship)}
+    \item \texttt{bool notifyRejectedStudent(s:Student, i:Internship)}
+    \item \texttt{bool notifyQuestionnaire(i:Internship)}
+    \item \texttt{bool notifyAcceptance(c:Company, i:Internship)}
+\end{itemize}
+
+
+
+\subsubsection{Preprocessor}
+\textit{PreprocessorAPI}
+\begin{itemize}
+    \item \texttt{data:PreprocessedData getApplications(i:Internship)}
+    \item \texttt{data:PreprocessedData getInternshipsAndCV(s:Student)}
+    \item \texttt{data:PreprocessedData searchInternships(s:Student)}
+    \item \texttt{data:PreprocessedData getInternshipsAndCVs(c:Company)}
+
+\end{itemize}
+
+\subsubsection{Evaluator Controller}
+\textit{RecommendationAPI}
+\begin{itemize}
+    \item \texttt{List[Internship] getSuggestedInternships(s:Student)}
+    \item \texttt{List[Internship] searchInternships(s:Student)}
+    \item \texttt{List[CV] getCVs(c:Company)}
+\end{itemize}
+
+
+\subsubsection{Data Manager}
+\textit{AuthenticationDAO Interface}
+\begin{itemize}
+    \item \texttt{bool checkValidUser(u:User)}
+    \item \texttt{bool addUser(u:User)}
+    \item \texttt{bool checkCredentials(u:User)}
+\end{itemize}
+
+\begin{flushleft}
+    \textit{DashboardDAO Interface}   
+\end{flushleft}
+
+\begin{itemize}
+    \item \texttt{List[Student] getMyStudents(u:University)}
+\end{itemize}
+
+\newpage
+
+\begin{flushleft}
+    \textit{InternshipDAO Interface}
+\end{flushleft}
+
+\begin{itemize}
+    \item \texttt{List[Internship] getInternships(s:Student)}
+    \item \texttt{Internship getInternshipInfo(internship:String)}
+    \item \texttt{List[Student] getRejectedStudents(internship:Internship)}
+    \item \texttt{bool submit(c:Company, form:FeedbackOfStudent)}
+    \item \texttt{bool submit(s:Student, form:FeedbackOfInternship)}
+    \item \texttt{List[Internship] getMyInternships(c:Company)}
+    \item \texttt{List[Internship] getMyInternships(s:Student)}
+    \item \texttt{bool addComplaint(c:Company, form:ComplaintAboutStudent)}
+    \item \texttt{bool addComplaint(s:Student, c:ComplaintAboutInternship)}
+    \item \texttt{bool addQuestionnaire(q:Questionnaire)}
+    \item \texttt{bool createInternship(internshipForm:List[String])}
+    \item \texttt{bool acceptStudent(s:Student, i:Internship)}
+\end{itemize}
+
+\begin{flushleft}
+    \textit{ApplicationDAO Interface}
+\end{flushleft}
+
+\begin{itemize}
+    \item \texttt{bool selectStudent(s:Student, a:Application)}
+    \item \texttt{bool rejectStudent(s:Student, a:Application)}
+    \item \texttt{bool apply(s:Student,i:Internship)}
+    \item \texttt{List[Application] getMyApplications(s:Student)}
+    \item \texttt{Application getApplicationInfo(application:String)}
+\end{itemize}
+
+\begin{flushleft}
+    \textit{PreprocessorDAO Interface}
+\end{flushleft}
+
+\begin{itemize}
+    \item \texttt{List[Application] getApplications(i:Internship)}
+    \item \texttt{List[Internship] getInternships(s:Student)}
+    \item \texttt{List[Internship] getInternships()}
+    \item \texttt{CV getCV(s:Student)}
+    \item \texttt{List[CV] getCVs()}
+\end{itemize}
+
+\begin{flushleft}
+    \textit{NotificationDAO Interface}
+\end{flushleft}
+
+\begin{itemize}
+    \item \texttt{String getUserEmail(userID:int)}
+    \item \texttt{List[String] getAppliedStudentsEmails(userIDs:List[int])}
+    \item \texttt{String getSelectedStudentEmail(studentID:int)}
+\end{itemize}
+
+\newpage
+
+\subsection{Selected architectural styles and patterns}
+
+\subsubsection{Client-Server Architecture}
+
+The system is based on a client-server architecture. The client is the front-end side of the application and can be accessed through a generic web browser. The server is the back-end side of the application and manages all the business logic of the system. The client and the server communicate through the internet using the HTTP protocol. The overall architecture is a three-tier architecture composed by the Client, the Server and the DBMS.
+
+\subsubsection{RESTful API}
+
+The system uses a RESTful API to communicate between the Client and the Server. The API is stateless and uses the HTTP protocol to perform the operations. The API is used to perform all the operations of the system, such as user registration, user login, internship creation, internship application, internship selection, student feedback submission, company feedback submission, student selection, university internship monitoring, etc.
+
+\subsubsection{Model-View-Controller (MVC) Pattern}
+
+The system uses the Model-View-Controller (MVC) pattern to separate the business logic from the user interface. The Model represents the data of the system, the View represents the user interface of the system and the Controller represents the business logic of the system. The MVC pattern is used to make the system more modular and easier to maintain.
+
+\subsection{Other design decisions}
+
+\subsubsection{Database Management System}
+
+The system uses a Database Management System (DBMS) to store all the data of the system. The DBMS is used to store the user data, the internship data, the application data, the feedback data, the complaint data, the questionnaire data, etc. The DBMS is used to make the data of the system persistent and to make the data of the system easily accessible. Moreover, we chose to implement a relational database to store the data of the system, because of its complex structure and relationships between the entities.
+
+\newpage
+
+\section{User Interface Design}
+
+In this section are shown the mock-ups of the application user interfaces. The mock-ups are used to give an idea of how the application will look like and how the user will interact with it. The mock-ups are designed to be simple and intuitive, so that the user can easily understand how to use the application.
+
+\begin{flushleft}
+    \textbf{\large{Login Page}}
+\end{flushleft}
+
+The \textbf{\textit{Login Page}} is the first page that the user sees when accessing the application. The user can log in by entering the email and the password. If the user is not registered, the user can sign up by clicking on the "Sign Up" button differentiated for students and companies.
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1.0\linewidth]{DD/files/Mockups/login.jpg}}
+    \caption*{Login Page}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Sign Up Page}}
+\end{flushleft}
+
+The \textbf{\textit{Sign Up Page}} is the page where the user can register to the application. The user can sign up as a student or as a company by entering the required information.
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1.0\linewidth]{DD/files/Mockups/signupstud.jpg}}
+    \caption*{Sign Up Page for Students}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1.0\linewidth]{DD/files/Mockups/signupcomp.jpg}}
+    \caption*{Sign Up Page for Companies}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Dashboard}}
+\end{flushleft}
+
+The \textbf{\textit{Dashboard}} is the landing page of the website for every user. It shows the user's personal information, along with the recommendation based on the user's type, whether it is a student or a company.
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1.0\linewidth]{DD/files/Mockups/dashboardstud.jpg}}
+    \caption*{Dashboard for Students}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1.0\linewidth]{DD/files/Mockups/dashboardcomp.jpg}}
+    \caption*{Dashboard for Companies}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Internship Search}}
+\end{flushleft}
+
+The \textbf{\textit{Internship Search}} page allows students to search for internships based on the name and the keywords. The page shows a list of internships that match the search criteria. The student can apply for an internship by clicking on the \textit{Apply} button.
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1.0\linewidth]{DD/files/Mockups/searchforinternship.jpg}}
+    \caption*{Internship Search by Students}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Student Search}}
+\end{flushleft}
+
+The \textbf{\textit{Student Search}} page allows companies to search for students based on the name and the keywords. The page shows a list of students that match the search criteria. The company can select a student for an internship by clicking on the \textit{Select} button.
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1.0\linewidth]{DD/files/Mockups/searchforstudent.jpg}}
+    \caption*{Student Search by Companies}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{My Internships Page}}
+\end{flushleft}
+
+The \textbf{\textit{My Internships Page}} shows the list of internships that the student has applied for. The page shows the status of the internships and possible recommendations based on the student's profile. In the same way, the \textbf{\textit{My Internships Page}} for companies shows the list of internships that the company has created along with recommendations based on the company's needs.
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1.0\linewidth]{DD/files/Mockups/myinternshipsstud.jpg}}
+    \caption*{My Internships Page for Students}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1.0\linewidth]{DD/files/Mockups/myinternshipscomp.jpg}}
+    \caption*{My Internships Page for Companies}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{My Applications Page}}
+\end{flushleft}
+
+The \textbf{\textit{My Applications Page}} shows the list of applications that the student has submitted. The page shows the status of the applications.
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1.0\linewidth]{DD/files/Mockups/myapplicationsstud.jpg}}
+    \caption*{My Applications Page}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Ongoing Internship Page}}
+\end{flushleft}
+
+The \textbf{\textit{Ongoing Internship Page}} shows data about an ongoing internship for the student. The page shows the progress of the internship, the projects related to the internship and the complaints that the student has submitted or received.
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1.0\linewidth]{DD/files/Mockups/internshippagestud.jpg}}
+    \caption*{Ongoing Internship Page for Students}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Internship Projects and Complaints Page}}
+\end{flushleft}
+
+The \textbf{\textit{Internship Projects Page}} shows the list of projects that the company has created for that internship. The page shows the status of the internships and the complaints that the company has submitted or received.
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1.0\linewidth]{DD/files/Mockups/internshipcreateproject.jpg}}
+    \caption*{Internship Projects and Complaints Page for Companies}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Selection Process Page}}
+\end{flushleft}
+
+The \textbf{\textit{Selection Process Page}} shows the list of students that have applied for an internship. The company can select the students for the internship by clicking on the \textit{Accept} button or reject the students by clicking on the \textit{Decline} button. Moreover, the students are sorted based on an overall score calculated by the system.
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1.0\linewidth]{DD/files/Mockups/internshipappliedstudents.jpg}}
+    \caption*{Students Selection Page for Companies}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Questionnaire Publishing Page}}
+\end{flushleft}
+
+The \textbf{\textit{Questionnaire Publishing Page}} allows companies to create and publish a questionnaire that is mandatory for applying to the internship. The page shows the list of questions that the company has created related to the questionnaire.
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1.0\linewidth]{DD/files/Mockups/internshipquestionnairecomp.jpg}}
+    \caption*{Internship Questionnaire Page for Companies}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Questionnaire Compilation Page}}
+\end{flushleft}
+
+The \textbf{\textit{Questionnaire Compilation Page}} allows students to compile the questionnaire proposed by the company. The page shows the list of questions that the company has created related to the questionnaire.
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1.0\linewidth]{DD/files/Mockups/internshipquestionnairestud.jpg}}
+    \caption*{Internship Questionnaire Page for Students}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Feedback Submission Page}}
+\end{flushleft}
+
+The \textbf{\textit{Feedback Submission Page}} allows students to submit feedback about an internship. The page offers a form where it is possible to rate the internship with up to five stars and to provide a comment about the experience. In the same exact way, the \textbf{\textit{Feedback Submission Page}} for companies allows them to submit feedback about a student.
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1.0\linewidth]{DD/files/Mockups/internshipfeedbackstud.jpg}}
+    \caption*{Feedback given by Students}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1.0\linewidth]{DD/files/Mockups/internshipfeedbackcomp.jpg}}
+    \caption*{Feedback given by Companies}
+\end{figure}
+
+\newpage
+
+\section{Requirements Traceability}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{0.6\textwidth}|p{0.4\textwidth}|}
+        \hline
+         \textbf{Requirements} & \textbf{Components} \\
+        \hline
+         R1. The system allows students to sign up\newline
+         &
+        AuthenticationService, \newline
+        DataManager\\
+        \hline
+        R2. The system allows companies HR to sign up.\newline
+         &
+        AuthenticationService,\newline
+        NotificationSeervice,\newline
+        DataManager\\
+        \hline
+        R3. The system allows registered students to log in.\newline
+         &
+        AuthenticationService,\newline
+        DataManager\\
+        \hline
+
+        R4. The system allows registered HRs of companies to log in.\newline
+         &
+        AuthenticationService,\newline
+        DataManager\\
+        \hline
+
+        R5. The system allows students to insert their CV.\newline
+         &
+        DashboardManager,\newline
+        DataManager\\
+        \hline
+
+        R6. The system allows users to insert and manipulate personal information.\newline
+         &
+        DashboardManager,\newline
+        DataManager\\
+        \hline
+
+        R7. The system allows companies to create new available internships.\newline
+         &
+        DashboardManager,\newline
+        InternshipManager,\newline
+        DataManager\\
+        \hline
+
+        R8. The system allows companies to set a deadline for available internships.\newline
+         &
+        DashboardManager,\newline
+        InternshipManager,\newline
+        DataManager\\
+        \hline
+
+        R9. The system automatically prevents students from applying for expired
+        internships.\newline
+         &
+        DashboardManager,\newline
+        InternshipManager,\newline
+        DataManager\\
+        \hline
+        R10. The system allows students to apply for an available internship.\newline
+         &
+        DashboardManager, \newline
+        InternshipManager,\newline
+        DataManager\\
+        \hline
+        R11. The system allows students to cancel an application to an internship.\newline
+         &
+        DashboardManager, \newline
+        ApplicationManager, \newline
+        InternshipManager,\newline
+        DataManager\\
+        \hline
+        R12. The system allows students to proactively search for internships by
+        using keywords.\newline
+         &
+        DashboardManager, \newline
+        EvaluatorController,\newline
+        Preprocessor,\newline
+        DataManager\\
+        \hline
+
+
+
+
+
+
+
+    \end{tabular}
+\end{table}
+
+\newpage
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{0.6\textwidth}|p{0.4\textwidth}|}
+        \hline
+         \textbf{Requirements} & \textbf{Components} \\
+         \hline
+         R13. The Recommendation system suggests available internships to students
+        based on statistical analysis.\newline
+         &
+        DashboardManager, \newline
+        EvaluatorController,\newline
+        Preprocessor,\newline
+        DataManager\\
+
+        \hline
+         R14. The Recommendation system recommends students to companies
+        based on students’ CVs.\newline
+         &
+        DashboardManager, \newline
+        EvaluatorController,\newline
+        Preprocessor,\newline
+        DataManager\\
+        \hline
+        R15. The system allows companies to request students to apply for a given
+        internship.\newline
+         &
+        DashboardManager, \newline
+        InternshipManager,\newline
+        NotificationService,\\
+        \hline
+       R16. The system allows students to accept or deny requests for internships
+        received from companies.\newline
+         &
+        DashboardManager, \newline
+        InternshipManager,\newline
+        ApplicationManager, \newline
+        NotificationService,\newline
+        DataManager\\
+        \hline
+       R17. The system allows companies to publish structured questionnaires on
+        the internship page.\newline
+         &
+        DashboardManager, \newline
+        InternshipManager,\newline
+        DataManager\\
+        \hline
+
+        R18. The system allows students to compile the questionnaires proposed by
+        the company.\newline
+         &
+        DashboardManager, \newline
+        InternshipManager,\newline
+        DataManager\\
+        \hline
+
+        R19. The system ranks students who applied to the internship based on the
+        results of the questionnaires.\newline
+         &
+        DashboardManager, \newline
+        InternshipManager,\newline
+        EvaluatorController,\newline
+        Preprocessor,\newline
+        ApplicationManager, \newline
+        DataManager\\
+
+        \hline
+
+       R20. The system allows companies to choose for a maximum number of
+        students to be accepted.\newline
+         &
+        DashboardManager,\newline
+        InternshipManager,\newline
+        DataManager\\
+        \hline
+
+        R21. The system allows both students and companies to provide feedback
+        about each other and to suggest potential improvements after the internship is over.\newline
+         &
+        DashboardManager,\newline
+        InternshipManager,\newline
+        DataManager\\
+        \hline
+
+        R22. The system notifies students whether their application for an internship has been accepted or declined.\newline
+         &
+        DashboardManager,\newline
+        InternshipManager,\newline
+        ApplicationManager,\newline
+        NotificationService,\newline
+        DataManager\\
+        \hline
+
+    \end{tabular}
+\end{table}
+
+\newpage
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{0.6\textwidth}|p{0.4\textwidth}|}
+        \hline
+         \textbf{Requirements} & \textbf{Components} \\
+         \hline
+        R23. The system allows students and companies to complain about problems
+        during internships.\newline
+         &
+        DashboardManager, \newline
+        InternshipManager,\newline
+        DataManager\\
+
+        \hline
+        R24. The system allows companies to check ratings of students applied to
+        one internship.\newline
+         &
+        DashboardManager, \newline
+        InternshipManager,\newline
+        EvaluatorController,\newline
+        Preprocessor,\newline
+        DataManager\\
+        \hline
+        R25. The system allows Universities to log in.\newline
+         &
+        AuthenticationService, \newline
+        DataManager\\
+        \hline
+        R26. The system allows Universities to monitor the internships by their
+        students.\newline
+         &
+        DashboardManager, \newline
+        InternshipManager,\newline
+        DataManager\\
+        \hline
+        R27. The system allows Students and Companies to send email to each
+        other.\newline
+         &
+        DashboardManager, \newline
+        NotificationService\\
+        \hline
+    \end{tabular}
+\end{table}
+
+
+\newpage
+
+\section{Implementation, Integration and Test Plan}
+
+The system will be implemented and tested through a \textit{bottom-up} approach and the same strategy will be used for both server, recommendation server and client. Since some interfaces like DAOs are assumed to be reliable, they won't need to be tested. 
+
+\subsection{Overview}
+
+In this section we will delve into the actual testing of every piece of our system, from server-side to recommendation service, and finally the client-side.
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Server Testing}}
+\end{flushleft}
+
+In the first step of server testing, we will implement the \textit{Data Manager} and our \textit{Model} (under the assumption of an MVC pattern implementation). Through the \textit{Model} it's possible to access the actual database by means of the \textit{Data Manager}. Our \textit{Model} will be tested using a \textit{Driver} that will substitute the not yet implemented components.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.2\linewidth]{DD/files/Testing/servertest1.jpg}
+    \caption*{Server Testing - Step 1}
+\end{figure}
+
+\newpage
+
+In the second step, the \textit{Notification Service} will be implemented and tested using \textit{Driver} that will substitute the \textit{Internship Manager}; moreover a \textit{Stub} will be used to emulate a \textit{Mail Server}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{DD/files/Testing/servertest2.jpg}
+    \caption*{Server Testing - Step 2}
+\end{figure}
+
+\newpage
+
+In the third step, we will implement the \textit{Authentication Service} that will be tested by means of a \textit{Driver} substituting the \textit{Dashboard Manager}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{DD/files/Testing/servertest3.jpg}
+    \caption*{Server Testing - Step 3}
+\end{figure}
+
+\newpage
+
+In the fourth step, both the \textit{Internship Manager} and the \textit{Application Manager} will be implemented and a \textit{Driver} each will substitute the \textit{Dashboard Manager}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{DD/files/Testing/servertest4.jpg}
+    \caption*{Server Testing - Step 4}
+\end{figure}
+
+\newpage
+
+Finally, in the fifth step, the \textit{Dashboard Manager} will be implemented and a \textit{Driver} will substitute the \textit{Client} layer.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{DD/files/Testing/servertest5.jpg}
+    \caption*{Server Testing - Step 5}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Recommendation Server Testing}}
+\end{flushleft}
+
+In the first step, we will implement the \textit{Preprocessor} that will be tested by using a \textit{Driver} that substitutes the yet not implemented components. Moreover, a \textit{Stub} will be used to emulate the \textit{Data Manager} from the \textit{Server}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.2\linewidth]{DD/files/Testing/recommtest1.jpg}
+    \caption*{Recommendation Server Testing - Step 1}
+\end{figure}
+
+\newpage
+
+In the second step, the \textit{Evaluator Controller} will be implemented and tested by means of a \textit{Driver} that substitutes the \textit{Dashboard Manager} from the \textit{Server}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.2\linewidth]{DD/files/Testing/recommtest2.jpg}
+    \caption*{Recommendation Server Testing - Step 2}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{\large{Client Testing}}
+\end{flushleft}
+
+After implementing and testing all the other components, we can finally implement and test our \textit{Client} by means of a \textit{Stub} that emulates the back-end of our system.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.2\linewidth]{DD/files/Testing/clienttest1.jpg}
+    \caption*{Client Testing - Step 1}
+\end{figure}
+
+\newpage
+
+\section{Effort Spent}
+\begin{table}[H]
+    \centering
+    \begin{minipage}{.45\linewidth}
+        \centering
+        \begin{tabular}{| p{1.5cm} | p{3cm} |}
+            \hline
+            \multicolumn{2}{|c|}{\textbf{Denis Sanduleanu}} \\
+            \hline
+            \hline
+            \textbf{Chapter} & \textbf{Effort (in hours)} \\
+            \hline
+            1 & 0 \\
+            \hline
+            2 & 10 \\
+            \hline
+            3 & 0 \\
+            \hline
+            4 & 2 \\
+            \hline
+            5 & 0 \\
+            \hline
+        \end{tabular}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}{.45\linewidth}
+        \centering
+        \begin{tabular}{| p{1.5cm} | p{3cm} |}
+            \hline
+            \multicolumn{2}{|c|}{\textbf{Francesco Gangi}} \\
+            \hline
+            \hline
+            \textbf{Chapter} & \textbf{Effort (in hours)} \\
+            \hline
+            1 & 1 \\
+            \hline
+            2 & 9 \\
+            \hline
+            3 & 11.5 \\
+            \hline
+            4 & 0 \\
+            \hline
+            5 & 4 \\
+            \hline
+        \end{tabular}
+    \end{minipage}
+\end{table}
+
+\newpage
+
+\section{References}
+
+\begin{itemize}
+    \item Diagrams made with: \textbf{Diagrams.net}
+    \item Mock-ups made with: \textbf{Figma}
+\end{itemize}
+
+\end{document}

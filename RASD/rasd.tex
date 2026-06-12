@@ -1,0 +1,1609 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{enumitem}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{listings} 
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+\definecolor{darkgreen}{rgb}{0,0.7,0}
+
+\lstdefinelanguage{Alloy}{
+    keywords={sig, pred, fact, fun, all, some, lone, one, and, or, not, implies, iff},
+    keywordstyle=\color{blue}\bfseries,
+    ndkeywords={Int, seq, set},
+    ndkeywordstyle=\color{purple}\bfseries,
+    identifierstyle=\color{black},
+    sensitive=true,
+    comment=[l]{//},
+    commentstyle=\color{darkgreen}\ttfamily,
+    stringstyle=\color{red}\ttfamily,
+    morestring=[b]",
+}
+
+\lstset{ %
+    language=Alloy,
+    basicstyle=\ttfamily\footnotesize, % Imposta il carattere di base
+    backgroundcolor=\color{lightgray!20}, % Colore di sfondo
+    frame=single, % Cornice attorno al codice
+    numbers=left, % Numeri di riga a sinistra
+    numberstyle=\tiny\color{gray}, % Stile dei numeri di riga
+    keywordstyle=\color{blue}, % Colore delle parole chiave
+    commentstyle=\color{green!50!black}, % Colore dei commenti
+    stringstyle=\color{red}, % Colore delle stringhe
+    breaklines=true, % Va a capo automaticamente per righe lunghe
+    xleftmargin=18pt,
+    xrightmargin=12pt,
+}
+
+\setlist[enumerate]{left=2em}
+\setlist[itemize]{left=2em}
+
+
+\title{RASD \\ [0.5ex] \small v2}
+\author{Francesco Gangi, Denis Sanduleanu}
+\date{December 8, 2024}
+
+
+\begin{document}
+
+\maketitle
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+
+\subsection{Purpose}
+The purpose of this project is to deliver the Requirement Analysis and Specification Document (RASD) for the “Students\&Companies” (S\&C) system-to-be. It aims to optimize the process of matching university students seeking internships with companies offering them. It acts as a bridge, ensuring that both parties can efficiently find and connect with opportunities that align with their needs and expectations.The ultimate goal of the S\&C platform is to simplify and enhance the entire internship process, from the initial search to the final selection and beyond. By leveraging technology for intelligent recommendations and providing tools to manage interactions, S\&C aims to create a seamless and productive experience for both students and companies. This ensures better matches, smoother communication, and continuous feedback, leading to higher satisfaction and more successful internships.
+
+
+
+
+\subsubsection{Goals}
+These are the goals that we want to achieve by implementing our software:
+
+\begin{enumerate}[label=G\arabic*.]
+    \item A student should be able to search for internships from various companies.
+    \item A student should receive recommendations about new internships based on several mechanisms such as keyword searching or statistical analysis.
+    \item Companies should be able to contact the applying students in order to accept or decline their application.
+    \item A student should be able to track and monitor the execution and the outcomes of the selection process.
+    \item Companies should be able to monitor the ongoing internships along with complaints, problems and feedback by the students.
+
+    \item Companies should get informed about available student CVs based on their needs.
+    \item Companies should be able to interview students through structured questionnaires.
+\end{enumerate}
+
+\subsection{Scope}
+According to the World and Machine paradigm, introduced by M. Jackson and P.
+Zave, we can identify the Machine as the System to be developed and the
+environment, in which S\&C will be used, as the World. The separation between
+these two concepts allows us to classify the entire phenomena in three different
+types.
+\subsubsection{World Phenomena}
+
+\begin{enumerate}[label=WP\arabic*.]
+    \item Student wants to insert CV.
+    \item Company HR wants to insert a new internship.
+    \item Company interviews a student.
+    \item Company has decided the winner/s of the internship matchmaking.
+    \item Student wants to complain about an internship.
+\end{enumerate}
+
+
+\subsubsection{Shared Phenomena}
+
+\begin{flushleft}
+    \textbf{Controlled by the Machine}
+\end{flushleft}
+\begin{enumerate}[label=SPM\arabic*.]
+    \item Recommendation mechanism informs a student about interesting internships.
+    \item Recommendation mechanism suggests CVs to the companies about an internship.
+    \item Internship page provides information to the Student .
+    \item The system notifies the students if their status of the application changes.
+\end{enumerate}
+
+\begin{flushleft}
+    \textbf{Controlled by the World}
+\end{flushleft}
+    \begin{enumerate}[label=SPW\arabic*.]
+    \item Student inserts CV inside the website.
+    \item Student sends application for an internship.
+    \item Student cancels an application.
+    \item Student searches for internships by typing keywords.
+    \item Company creates a new questionnaire for the internship in order to interview students.
+    \item Student compiles questionnaires sent by the company.
+    \item Company contacts the student by sending him an email.
+    \item Student sends email to the Company
+    \item Company grades the a student's answers of a questionnaire.
+    \item Student accesses to the monitoring page of the internship.
+    \item Company accesses to the monitoring page of the internship.
+    \item Student writes a complaint about the internship they are experiencing.
+    \item Student reviews the internship after finishing it.
+    \item Company reviews the student internship.
+    
+\end{enumerate}
+
+
+
+
+
+\subsection{Definitions, Acronyms, Abbreviations}
+
+
+\subsubsection{Definitions}
+\begin{itemize}
+    \item \textbf{URL}: Uniform Resource Locator, it  is the address of a unique resource on the internet.
+\end{itemize}
+
+\subsubsection{Acronyms}
+
+\begin{itemize}
+    \item \textbf{S\&C}: Students\&Companies
+    \item \textbf{HR}: Human Resources
+    \item \textbf{CV}: Curriculum Vitae
+\end{itemize}
+
+
+\subsubsection{Abbreviations}
+
+\begin{itemize}
+    \item \textbf{Gn}: the n-th goal
+    \item \textbf{WPn}: the n-th world phenomenon
+    \item \textbf{SPMn}: the n-th shared phenomenon controlled by the Machine
+    \item \textbf{SPWn}: the n-th shared phenomenon controlled by the World
+    \item \textbf{Rn}: the n-th functional requirement
+    \item \textbf{Dn}: the n-th domain assumption
+    \item \textbf{UCn}: the n-th use case
+\end{itemize}
+
+
+\subsection{Revision History}
+
+\begin{itemize}
+    \item \textbf{Version 1.0} (Nov. 9, 2024)
+    \item \textbf{Version 2.0} (Dec. 8, 2024): \textit{updated Class Diagram by adding University as an entity, updated Use Cases and enriched Alloy section.}
+\end{itemize}
+
+\subsection{Reference Documents}
+
+\begin{itemize}
+    \item \textbf{Assignment Document} (Assignment RASD\&DD A.Y. 2024-2025)
+    \item \textbf{Course Slides} (Software Engineering 2 A.Y. 2024-2025)
+\end{itemize}
+
+\subsection{Document Structure}
+\begin{enumerate}
+    \item \textbf{Introduction}: it aims to give a brief description of the project. In particular it’s focused on the reasons and the goals that are going to be achieved with its development.
+    \item \textbf{Overall Description}: it is an high-level description of how the system works with a detailed explanation of the phenomena that involve the world,the machine or both,there is also the domain description with its assumptions.
+    \item \textbf{Specific Requirements}: in this section there is a detailed analysis of the requirements needed to achieve the goals. Moreover, it contains more information useful for developers (i.e constraints about HW and SW).
+    \item \textbf{Formal analysis}: it’s a formal description of the world phenomena by the means of Alloy.
+    \item \textbf{Effort spent}: it shows the time spent to realize this document organized by section.
+    \item \textbf{References}: it contains the references to any documents and software used to write this paper.
+\end{enumerate}
+
+\newpage
+
+\section{Overall Description}
+
+\subsection{Product Perspective}
+
+\subsubsection{Scenarios}
+
+\begin{enumerate}
+    \item \textbf{User does a proactive search}\\
+    Bob wants to search for an internship abroad to further expand his knowledge about Neural Networks. He also wants to learn Spanish so he's looking for an internship in Spain. He remembers of S\&C, a web app that helps university students looking for internships provided by companies. He opens his browser, types the URL of the site and, after logging in, he goes to the Recommendation System form to search for interesting internships. He checks keywords like "Machine Learning", "Neural Networks" and "Spain" and submits his search. The system shows the best options available matching his requests. Bob reads carefully every internship and chooses the ones he thinks are the best by clicking on the "Apply" button. The company gets notified for Bob's application.
+    \item \textbf{Company posts a new available internship}\\
+    OpenAI is looking for new students who might want to learn new subjects and expand their knowledge about Deep Neural Network and wants to advertise its new internship in San Francisco, California. The company HR Mark knows there exists a new website called S\&C that allows companies to promote new internships. He searches of the website and signs up as a company profile. He then goes to the form about creating a new internship and fills up all the parameters (ex. tasks, technologies, benefits...).
+    \item \textbf{Automated Recommendation System}\\
+    Bob is a student who is interested in doing an internship but he doesn't have much knowledge about the best options for him. He knows that S\&Cs is able to suggest him interesting internships based on his CV, so he goes to the User Settings page and inserts his CV as a PDF file. After saving his settings, he goes back to the Home page and sees that the website suggested him some internship about Web Developing, since Bob had a part-time job as a Web Developer. Similarly the website, after analyzing Bob's CV, will show Bob as a good candidate in the Main page of the companies which are looking for a web developer.
+    \item \textbf{Selection Process and Interview Management}\\
+    Julie, as many students looking for a great offer, applied for the internship offered by OpenAI, so it had a great demand. The problem is that there are only 4 spots even if more than 2000 students applied. The deadline for the application has exceeded and the HR has to choose among more than 2000 students! Luckily S\&Cs supports the selection process by enabling the company to interview students and rank them by posting questionnaires. After answering the questionnaire, Julie can track the status of her application by going to the Status page. Here she can see that the selection process is still on-going. The HR can see the ranking of the students based on the questionnaires the students have completed and notices that Julie is in first place. The company then decides the 4 students to be selected and Julie is one of them, so the HR selects and adds them to the internship. Julie enters the website and sees a notification from OpenAI about being accepted for the internship.
+    \item \textbf{Internship Monitoring}\\
+    After OpenAI internship has started both Julie and OpenAI can monitor its state by going to the internship page, which displays the ongoing activities, the duration of the internship and other important information. Both parties can add complaints through and such complaints can be seen on the internship page.
+    \item \textbf{Feedback and Suggestions}\\
+    After Bob has finished his internship for Google, the platform asks him to give a feedback about the work experience and the company by compiling a form with ratings about several aspects (from 1 to 5 stars) and, if wanted, by writing some suggestions so that future students will be able to check the reviews of the internship and decide. The company can give a review about the behavior of Bob during the internship as well. So, if someone will eventually check Bob's user page, the internships history and ratings will be shown.
+\end{enumerate}
+
+    
+\subsubsection{Domain Class Diagram}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{RASD/files/UML Diagrams/UMLv6.png}
+    \caption*{Domain Class Diagram}
+\end{figure}
+
+\subsubsection{State Diagrams}
+The subsequent section details the principal elements of the Students\&Companies system and their progression through different phases. For this purpose, some State Diagrams are proposed.
+
+\begin{flushleft}
+    \textbf{Internship}
+\end{flushleft}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{RASD/files/State Diagrams/StateInternship.jpg}
+    \caption*{Internship State Diagram}
+\end{figure}
+
+The diagram in question outlines the potential phases of an Internship. It is created by a company and enters the \textit{Available} phase, allowing students to make an application. After the subscription deadline has been reached, the system transitions the internship to the \textit{Selection Process} phase, in which the company has to select the students who will participate to the internship. Upon the resolution of these selections, the system sets the internship to \textit{Ongoing}, meaning that students are attending the internship. After the end has been reached, it is set to \textit{Finished}.
+
+\newpage
+
+\begin{flushleft}
+    \textbf{Application}
+\end{flushleft}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{RASD/files/State Diagrams/StateApplication.jpg}
+    \caption*{Application State Diagram}
+\end{figure}
+
+The application is created by a student who wants to apply for an Internship. The first state is \textit{Pending} since it must be evaluated by the company with respect to all other applications. If the student has been selected, the state is set to \textit{Selected} and the student has 3 days (72 hours) to confirm his application, otherwise it is set to \textit{Declined}.
+
+
+\subsection{Product Functions}
+\subsubsection{Requirements}
+\begin{enumerate}
+    \item \textbf{Sign Up and Login}\\
+    This function will be available for all users. The sign up feature allows users to register themselves on the platform, by typing their email address (it'll be used as username) and by choosing a password. After successfully registering to the system, it'll be asked to insert personal information such as name, surname, birthdate and their phone number (mandatory). The login feature allows already registered users to access their personal page and manipulate their data.
+    \item \textbf{Insert CV}\\
+    This function will be available for students only. In order to be allowed to search for internships, the CV insertion is a fundamental step. The system prevents a student from doing anything until they successfully upload their CV on the website (a PDF version of the file is required). After that, the student will be allowed to use the platform freely.
+    \item \textbf{Manage applications}\\
+    This function will be available for students only. In order to manage their own applications for selected internships, every student can access a personal dashboard to apply for new internships, monitor ongoing internships applications status or cancel an application.
+    \item \textbf{Insert an internship}\\
+    This function will be available for companies only. From companies side, one of the most important tasks will be the insertion of new internships offers. The company dashboard will allow the authorized personnel to add new offers, by inserting a name, some keywords, the duration and (potentially) the compensation.
+    \item \textbf{Manage internships}\\
+    This function will be available for companies only. Companies HRs will have to manage the already existing internships, by removing expired offers or by editing expiration dates for applications. Furthermore, HRs should be able to change descriptions of the existing offers, add new keywords (if needed) and specify a compensation (if it wasn't already specified).
+    \item \textbf{Recommendation system}\\
+    This function will be available for all users. Recommendation system will allow users to receive suggestions based on statistical analysis, specific keywords, ratings. Students with good reviews will be suggested to companies in order to be contacted for an internship opportunity. On the other side, this functionality will notify students about internships of their interest based on their preferences expressed on the website.
+
+
+\end{enumerate}
+
+\subsection{User Characteristics}
+In the S\&C platform, users are people who own a device able to connect to the internet, for example a smartphone, a tablet or a personal computer and have a browser which is used to type the S\&C URL.  They can be either Students or Companies, each with distinct roles and motivations.
+\begin{itemize}
+    \item \textbf{Students}: they join S\&C to search for interesting internships in order to enhance their skills and experiences in the working environment. To use the all the platform's services, they need to load their CV in order to have personalized recommendations based on their assets. After they have applied for internships, they will be notified
+    \item \textbf{Companies}: they join S\&C to gain easy access to student talent, reduce hiring costs, build a future workforce, and enhance their brand as an employer of choice. The platform also monitors the selection process and offers data-driven insights, helping companies remain competitive in attracting the right candidates while contributing to students’ professional development.
+\end{itemize}
+\subsection{Assumptions, Dependencies, and Constraints}
+\subsubsection{Domain Assumptions}
+\begin{enumerate}[label=D\arabic*.]
+    \item Both students and company HRs must have an internet connection.
+    \item CVs of the students are written in English.
+    \item Students who have been selected for the internship have up to 3 days to decide either to accept it or not.
+    \item Only HRs are delegated to access the website on behalf of the company's name.
+    \item Every student by uploading their CV automatically includes a phone number and an email address for possibly being contacted by HRs.
+    \item The feedback provided by students are assumed to be honest and transparent about their experiences, in order not to make the matchmaking system misleading.
+    \item It is assumed that all internships posted on the platform comply with local labor laws and regulations, including rules regarding the minimum duration of internships, working conditions, and compensation (if applicable).
+    \item Student types the correct name of the internship when searching it.
+    \item Information written in student's CV truly represents his skills and goals.
+    \item It is assumed that Universities don't have to sign up. The system has already information about them, they just have to log in.
+
+\end{enumerate}
+
+\newpage
+
+\section{Specific Requirements}
+
+\subsection{External Interface Requirements}
+\subsubsection{User Interfaces}
+
+In this section the UI of the platform is presented: the main functions by students or companies are shown through some mock-ups that indicatively represent the actual interaction. 
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1\linewidth]{RASD/files/Mockups/login.jpg}}
+    \caption{Login Page}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1\linewidth]{RASD/files/Mockups/signupstud.jpg}}
+    \caption{Sign Up Page for Students}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1\linewidth]{RASD/files/Mockups/signupcomp.jpg}}
+    \caption{Sign Up Page for Companies}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1\linewidth]{RASD/files/Mockups/profile.jpg}}
+    \caption{Student Profile Page}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \frame{\includegraphics[width=1\linewidth]{RASD/files/Mockups/myinternships.jpg}}
+    \caption{My Internships Page}
+\end{figure}
+
+\subsubsection{Hardware Interfaces}
+
+In order to use the platform, both students and companies must be able to access it through a generic web browser. So a laptop or a desktop computer it's obviously the mandatory choice for every user.
+
+
+\subsubsection{Software Interfaces}
+
+The system must integrate a Notification Provider through which it's possible to notify about any important information or upcoming news. Along with that, in order to give proper recommendations to students and companies, a Recommendation System needs to be implemented as well.
+
+\subsubsection{Communication Interfaces}
+
+In order to properly work, the platform obviously requires an internet connection since it's hosted on a website and data is going to be exchanged.
+
+\subsection{Functional Requirements}
+\begin{enumerate}[label=R\arabic*.]
+    \item The system allows students to sign up.
+    \item The system allows companies HR to sign up.
+    \item The system allows registered students to log in.
+    \item The system allows registered HRs of companies to log in.
+    \item The system allows students to insert their CV.
+    \item The system allows users to insert and manipulate personal information.
+    \item The system allows companies to create new available internships.
+    \item The system allows companies to set a deadline for available internships.
+    \item The system automatically prevents students from applying for expired internships.
+    \item The system allows students to apply for an available internship.
+    \item The system allows students to cancel an application to an internship.
+    \item The system allows students to proactively search for internships by using keywords.
+    \item The Recommendation system suggests available internships to students based on statistical analysis.
+    \item The Recommendation system recommends students to companies \\ based on students' CVs.
+    \item The system allows companies to request students to apply for a given internship.
+    \item The system allows students to accept or deny requests for internships received from companies.
+    \item The system allows companies to publish structured questionnaires on the internship page.
+    \item The system allows students to compile the questionnaires proposed by the company.
+    \item The system ranks students who applied to the internship based on the results of the questionnaires.
+    \item The system allows companies to choose for a maximum number of students to be accepted.
+    \item The system allows both students and companies to provide feedback about each other and to suggest potential improvements after the internship is over.
+    \item The system notifies students whether their application for an internship has been accepted or declined.
+    \item The system allows students and companies to complain about problems during internships.
+    \item The system allows companies to check ratings of students applied to one internship.
+    \item The system allows Universities to log in.
+    \item The system allows Universities to monitor the internships by their students.
+    \item The system allows Students and Companies to send email to each other.
+\end{enumerate}
+
+\newpage
+
+\subsubsection{Use Cases Diagrams}
+
+In the following are provided the use case diagrams deduced from the scenarios reported in paragraph 2.1.1. They help identify the actors interacting with the system and their role within each use case.
+
+\begin{flushleft}
+    \textbf{Student Use Case Diagram}
+\end{flushleft}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{RASD/files/Use Cases/useCasesStudentv2.jpg}
+    \caption*{Student Use Case Diagram}
+\end{figure}
+
+\newpage
+
+\begin{flushleft}
+    \textbf{Company Use Case Diagram}
+\end{flushleft}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{RASD/files/Use Cases/useCasesCompany.jpg}
+    \caption*{Company Use Case Diagram}
+\end{figure}
+
+\newpage
+
+\subsubsection{Use Cases}
+
+\begin{table}[H]
+    \centering
+    \begin{flushleft}
+        \textbf{UC1 - Sign Up Student}
+    \end{flushleft}
+    \begin{tabular}{|p{3cm}|p{8cm}|}
+        \hline
+        \textbf{Name} & Sign Up Student \\
+        \hline
+        \textbf{Actors} & Student \\
+        \hline
+        \textbf{Entry condition} & The student has opened the S\&C platform and has no credentials yet \\
+        \hline
+        \textbf{Event flow} &
+        1) The student registers through a form asking for email, password, name, surname and mobile phone \newline
+        2) The student clicks on "sign up" button \newline
+        3) The platform runs a credentials check \newline
+        4) The student signs up successfully \\
+        \hline
+        \textbf{Exit condition} & The student successfully registered to the system \\
+        \hline
+        \textbf{Exception} & 3) The email already exists in the system \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.75\linewidth]{RASD/files/Sequence Diagrams/signupStudentv2.png}
+\end{figure}
+
+\newpage
+
+\begin{table}[H]
+    \centering
+    \begin{flushleft}
+        \textbf{UC2 - Sign Up Company}
+    \end{flushleft}
+    \begin{tabular}{|p{3cm}|p{8cm}|}
+        \hline
+        \textbf{Name} & Sign Up Company \\
+        \hline
+        \textbf{Actors} & Company \\
+        \hline
+        \textbf{Entry condition} & The company has opened the S\&C platform and has no credentials yet \\
+        \hline
+        \textbf{Event flow} &
+        1) The company registers through a form asking for email, password, company name, description \newline
+        2) The company clicks on "sign up" button \newline
+        3) The platform runs a credentials check \newline
+        4) The company signs up successfully \\
+        \hline
+        \textbf{Exit condition} & The company successfully registered to the system \\
+        \hline
+        \textbf{Exception} & 3) The email already exists in the system \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{RASD/files/Sequence Diagrams/companysignupv2.png}
+\end{figure}
+
+
+\begin{table}[H]
+    \centering
+    \begin{flushleft}
+        \textbf{UC3 - Login Student}
+    \end{flushleft}
+    \begin{tabular}{|p{3cm}|p{8cm}|}
+        \hline
+        \textbf{Name} & Login Student \\
+        \hline
+        \textbf{Actors} & Student \\
+        \hline
+        \textbf{Entry condition} & The student has opened the S\&C platform and has already signed up \\
+        \hline
+        \textbf{Event flow} &
+        1) The student inserts username and password in the form \newline
+        2) The student clicks on "login" button \newline
+        3) The platform runs a credentials check \newline
+        4) The student logs in successfully \\
+        \hline
+        \textbf{Exit condition} & The student successfully accessed the personal area \\
+        \hline
+        \textbf{Exception} & 3) The credentials are not valid \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.82\linewidth]{RASD/files/Sequence Diagrams/StudentLogin.png}
+\end{figure}
+
+
+\begin{table}[H]
+    \centering
+    \begin{flushleft}
+        \textbf{UC4 - Login Company}
+    \end{flushleft}
+    \begin{tabular}{|p{3cm}|p{8cm}|}
+        \hline
+        \textbf{Name} & Login Company \\
+        \hline
+        \textbf{Actors} & Company \\
+        \hline
+        \textbf{Entry condition} & The company has opened the S\&C platform and has already signed up \\
+        \hline
+        \textbf{Event flow} &
+        1) The company inserts username and password in the form \newline
+        2) The company clicks on "login" button \newline
+        3) The platform runs a credentials check \newline
+        4) The company logs in successfully \\
+        \hline
+        \textbf{Exit condition} & The company successfully accessed the personal area \\
+        \hline
+        \textbf{Exception} & 3) The credentials are not valid \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.9\linewidth]{RASD/files/Sequence Diagrams/CompanyLogin.png}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \begin{flushleft}
+        \textbf{UC5 - Loading CV}
+    \end{flushleft}
+    \begin{tabular}{|p{3cm}|p{8cm}|}
+        \hline
+        \textbf{Name} & Loading CV \\
+        \hline
+        \textbf{Actors} & Student \\
+        \hline
+        \textbf{Entry condition} & The student is logged in and has not yet uploaded any CV \\
+        \hline
+        \textbf{Event flow} &
+        1) The student clicks on "insert" button \newline
+        2) The student chooses a pdf file and uploads it on the platform \newline
+        3) The platform runs a check to make sure the requested file format is respected \newline
+        4) The student clicks on "save" button \\
+        \hline
+        \textbf{Exit condition} & The CV pdf has been successfully uploaded and the changes have been saved \\
+        \hline
+        \textbf{Exception} & 3) The file format is not valid \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{RASD/files/Sequence Diagrams/LoadCV.png}
+\end{figure}
+
+
+\begin{table}[H]
+    \centering
+    \begin{flushleft}
+        \textbf{UC6 - Internship application}
+    \end{flushleft}
+    \begin{tabular}{|p{3cm}|p{8cm}|}
+        \hline
+        \textbf{Name} & Internship application \\
+        \hline
+        \textbf{Actors} & Student \\
+        \hline
+        \textbf{Entry condition} & The student is logged in and has uploaded a valid CV \\
+        \hline
+        \textbf{Event flow} &
+        1) The student search for an internship \newline
+        2) The student chooses an internship file and accesses the internship page on the platform \newline
+        3) The student clicks on "apply" button \newline
+        4) The system checks whether the deadline has expired or not \newline 
+        5) The application has been submitted \\
+        \hline
+        \textbf{Exit condition} & The application process is completed successfully \\
+        \hline
+        \textbf{Exception} & 4) The deadline of the internship has exceeded \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.75\linewidth]{RASD/files/Sequence Diagrams/InternshipApplication.png}
+\end{figure}
+
+
+\begin{table}[H]
+    \centering
+    \begin{flushleft}
+        \textbf{UC7 - Internship creation}
+    \end{flushleft}
+    \begin{tabular}{|p{3cm}|p{8cm}|}
+        \hline
+        \textbf{Name} & Internship creation \\
+        \hline
+        \textbf{Actors} & Company \\
+        \hline
+        \textbf{Entry condition} & The company is logged in \\
+        \hline
+        \textbf{Event flow} &
+        1) The company clicks on "add" button on the internships page \newline
+        2) The company enters information about the internship such as name, description, field of interest, deadline and compensation (if there is any) \newline
+        3) The company clicks on "save" button \newline
+        4) The system checks whether the deadline is valid or not \newline 
+        5) The creation is done \\
+        \hline
+        \textbf{Exit condition} & The creation process is completed successfully \\
+        \hline
+        \textbf{Exception} & 4) The deadline of the new internship is not a valid date \\
+        \hline
+    \end{tabular}
+\end{table}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.75\linewidth]{RASD/files/Sequence Diagrams/InternshipCreation.png}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \begin{flushleft}
+        \textbf{UC8 - Accepting an internship}
+    \end{flushleft}
+    \begin{tabular}{|p{3cm}|p{8cm}|}
+        \hline
+        \textbf{Name} & Accepting an internship \\
+        \hline
+        \textbf{Actors} & Student \\
+        \hline
+        \textbf{Entry condition} & The student is logged in and got selected for an internship he applied for \\
+        \hline
+        \textbf{Event flow} &
+        1) The student sees a notification about being selected for a given internship \newline
+        2) The student chooses goes to the internship page \newline
+        3) The student clicks on "accept" button to accept the internship \newline
+        4) The system checks whether the deadline has expired or not \newline 
+        5) The internship has been accepted by the student \\
+        \hline
+        \textbf{Exit condition} & The internship acceptance has been completed successfully \\
+        \hline
+        \textbf{Exception} & 4) The deadline for accepting or rejecting the internship has exceeded \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{RASD/files/Sequence Diagrams/AcceptInternship.png}
+\end{figure}
+
+
+\begin{table}[H]
+    \centering
+    \begin{flushleft}
+        \textbf{UC9 - Making a complaint about an ongoing internship}
+    \end{flushleft}
+    \begin{tabular}{|p{3cm}|p{8cm}|}
+        \hline
+        \textbf{Name} & Making a complaint about an ongoing internship \\
+        \hline
+        \textbf{Actors} & Student \\
+        \hline
+        \textbf{Entry condition} & The student is logged in and has an ongoing internship \\
+        \hline
+        \textbf{Event flow} &
+        1) The student navigates to the internship page \newline
+        2) The student clicks on the "make a complaint" button \newline
+        3) The student inserts the description of the problem \newline
+        4) The company clicks "submit" after typing \newline
+        5) The system checks whether there's an empty text or not \newline
+        6) The complaint is submitted \\
+        \hline
+        \textbf{Exit condition} & The complaint has been submitted successfully \\
+        \hline
+        \textbf{Exception} & 5) The description of the complaint is empty \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.6\linewidth]{RASD/files/Sequence Diagrams/StudentComplains.png}
+\end{figure}
+
+
+\begin{table}[H]
+    \centering
+    \begin{flushleft}
+        \textbf{UC10 - Making a complaint about a student}
+    \end{flushleft}
+    \begin{tabular}{|p{3cm}|p{8cm}|}
+        \hline
+        \textbf{Name} & Making a complaint about a student \\
+        \hline
+        \textbf{Actors} & Company \\
+        \hline
+        \textbf{Entry condition} & The company is logged in and there's a student with an ongoing internship by the same company \\
+        \hline
+        \textbf{Event flow} &
+        1) The company navigates to the internship page \newline
+        2) The company clicks on the "make a complaint" button \newline
+        3) The company inserts the description of the problem \newline
+        4) The company clicks "submit" after typing \newline
+        5) The system checks whether there's an empty text or not \newline
+        6) The complaint is submitted \\
+        \hline
+        \textbf{Exit condition} & The complaint has been submitted successfully \\
+        \hline
+        \textbf{Exception} & 5) The description of the complaint is empty or the student is not participating to the internship \\
+        \hline
+    \end{tabular}
+\end{table}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.6\linewidth]{RASD/files/Sequence Diagrams/CompanyComplains.png}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \begin{flushleft}
+        \textbf{UC11 - Canceling an internship application}
+    \end{flushleft}
+    \begin{tabular}{|p{3cm}|p{8cm}|}
+        \hline
+        \textbf{Name} & Canceling an internship application \\
+        \hline
+        \textbf{Actors} & Student \\
+        \hline
+        \textbf{Entry condition} & The student is logged in and has a pending internship application \\
+        \hline
+        \textbf{Event flow} &
+        1) The student navigates to the internship page \newline
+        2) The student clicks on the "cancel" button \newline
+        3) The student clicks on "confirm" button to confirm his choice \newline
+        4) The cancellation is done \\
+        \hline
+        \textbf{Exit condition} & The cancellation has been submitted successfully \\
+        % \hline
+        % \textbf{Exception} & \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.75\linewidth]{RASD/files/Sequence Diagrams/StudentCancelsApplication.png}
+\end{figure}
+
+
+\begin{table}[H]
+    \centering
+    \begin{flushleft}
+        \textbf{UC12 - Proactive search by the student}
+    \end{flushleft}
+    \begin{tabular}{|p{3cm}|p{8cm}|}
+        \hline
+        \textbf{Name} & Proactive search by the student \\
+        \hline
+        \textbf{Actors} & Student \\
+        \hline
+        \textbf{Entry condition} & The student is logged in and has uploaded a valid CV \\
+        \hline
+        \textbf{Event flow} &
+        1) The student clicks on the search bar \newline
+        2) The student types in the keywords of interest \newline
+        3) The student clicks on "search" \newline
+        4) The system runs a check on the input \newline
+        5) The search results are shown \\
+        \hline
+        \textbf{Exit condition} & The search operation has been performed successfully \\
+        \hline
+        \textbf{Exception} & 4) The search bar input is empty \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{RASD/files/Sequence Diagrams/ProactiveSearch.png}
+\end{figure}
+
+
+\begin{table}[H]
+    \centering
+    \begin{flushleft}
+        \textbf{UC13 - Posting interview questionnaire}
+    \end{flushleft}
+    \begin{tabular}{|p{3cm}|p{8cm}|}
+        \hline
+        \textbf{Name} & Posting interview questionnaire \\
+        \hline
+        \textbf{Actors} & Company \\
+        \hline
+        \textbf{Entry condition} & The company is logged in and there's an internship published \\
+        \hline
+        \textbf{Event flow} &
+        1) The company navigates to the internships page \newline
+        2) The company clicks on the "edit" button of a given internship \newline
+        3) The company publishes a questionnaire \newline
+        4) The company saves the changes \newline
+        5) The questionnaire is uploaded \\
+        \hline
+        \textbf{Exit condition} & The questionnaire has been uploaded successfully \\
+        % \hline
+        % \textbf{Exception} & \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{RASD/files/Sequence Diagrams/PostingQuestionnaire.png}
+\end{figure}
+
+
+
+\begin{table}[H]
+    \centering
+    \begin{flushleft}
+        \textbf{UC14 - Providing feedback about the internship}
+    \end{flushleft}
+    \begin{tabular}{|p{3cm}|p{8cm}|}
+        \hline
+        \textbf{Name} & Providing feedback about the internship \\
+        \hline
+        \textbf{Actors} & Student \\
+        \hline
+        \textbf{Entry condition} & The student is logged in and has completed an internship \\
+        \hline
+        \textbf{Event flow} &
+        1) The student navigates to the internship page \newline
+        2) The student clicks on "review" button to give a feedback about the finished internship \newline
+        3) The student writes a review and rates the internship and a company with a value from 1 to 5 \newline
+        4) The student clicks on the "submit" button \newline
+        5) The system runs a check to see if there's any empty field in the review \newline
+        6) The feedback is submitted \\
+        \hline
+        \textbf{Exit condition} & The feedback has been submitted successfully \\
+        \hline
+        \textbf{Exception} & 5) Some of the fields are empty \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.5\linewidth]{RASD/files/Sequence Diagrams/StudentprovideFeedback.png}
+\end{figure}
+
+
+
+\begin{table}[H]
+    \centering
+    \begin{flushleft}
+        \textbf{UC15 - Providing feedback about the student}
+    \end{flushleft}
+    \begin{tabular}{|p{3cm}|p{8cm}|}
+        \hline
+        \textbf{Name} & Providing feedback about the student \\
+        \hline
+        \textbf{Actors} & Company \\
+        \hline
+        \textbf{Entry condition} & The student is logged in and the student has completed an internship with the company \\
+        \hline
+        \textbf{Event flow} &
+        1) The company navigates to the internship page \newline
+        2) The company clicks on "review" button to give a feedback about the finished internship \newline
+        3) The company writes a review and rates the internship and a company with a value from 1 to 5 \newline
+        4) The company clicks on the "submit" button \newline
+        5) The system runs a check to see if there's any empty field in the review \newline
+        6) The feedback is submitted \\
+        \hline
+        \textbf{Exit condition} & The feedback has been submitted successfully \\
+        \hline
+        \textbf{Exception} & 5) Some of the fields are empty \\
+        \hline
+    \end{tabular}
+\end{table}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.53\linewidth]{RASD/files/Sequence Diagrams/CompanyprovideFeedback.png}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \begin{flushleft}
+        \textbf{UC16 - Manage student Applications}
+    \end{flushleft}
+    \begin{tabular}{|p{3cm}|p{8cm}|}
+        \hline
+        \textbf{Name} & Managing the application of a student \\
+        \hline
+        \textbf{Actors} & Company, Student, Recommendation, NotificationProvider \\
+        \hline
+        \textbf{Entry condition} & The company is logged in and there is an available internship \\
+        \hline
+        \textbf{Event flow} &
+        1) The company navigates to the internship page during the selection process\newline
+        2) The company clicks on a student if he was suggested by the Recommendation System \newline
+        3) The Notification Provider notifies the student if he has been accepted or rejected
+        \\
+        \hline
+        \textbf{Exit condition} & The subscription deadline has been reached \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{RASD/files/Sequence Diagrams/ManageInternship.png}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \begin{flushleft}
+        \textbf{UC17 - Monitor Internship}
+    \end{flushleft}
+    \begin{tabular}{|p{3cm}|p{8cm}|}
+        \hline
+        \textbf{Name} & Monitoring an internship \\
+        \hline
+        \textbf{Actors} & University\\
+        \hline
+        \textbf{Entry condition} & The University is logged in and there is an ongoing internship \\
+        \hline
+        \textbf{Event flow} &
+        1) The University navigates to the students page\newline
+        2) The University clicks on a student who is doing an internship \newline
+        3) The University clicks on "Internship Information" button
+        \\
+        \hline
+        \textbf{Exit condition} & The subscription deadline has been reached \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.53\linewidth]{RASD/files/Sequence Diagrams/MonitorInternship.png}
+    \caption*{\textbf{N.B.}: Students and Companies can similarly monitor the status of an ongoing internship.}
+\end{figure}
+
+\subsubsection{Requirement Mapping}
+
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{0.4\textwidth}|p{0.4\textwidth}|}
+        \hline
+        \multicolumn{2}{|p{10cm}|}{\textbf{G1} - A student should be able
+        to search for internships from various companies} \\
+        \hline
+        \textbf{Requirements} & \textbf{Domain Assumptions} \\
+        \hline
+        R1. The system allows students to sign up\newline R2. The system allows companies HR to sign up.\newline R3. The system allows registered students to log in.\newline R4. The system allows registered HRs of companies to log in.\newline R7. The system allows companies to create new available internships.\newline R12. The system allows students to proactively search for internships by
+using keywords. \newline & D1. Student must have a reliable internet connection.\newline D9. Student types the correct name of the internship when searching it. \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{0.4\textwidth}|p{0.4\textwidth}|}
+        \hline
+        \multicolumn{2}{|p{10cm}|}{\textbf{G2} - A student should receive recommendations about new internships based on several mechanisms such as keyword searching or statistical analysis.} \\
+        \hline
+        \textbf{Requirements} & \textbf{Domain Assumptions} \\
+        \hline
+          R1. The system allows students to sign up\newline R2. The system allows companies HR to sign up.\newline R3. The system allows registered students to log in.\newline R4. The system allows registered HRs of companies to log in.\newline R5. The system allows students to insert their CV.\newline R7. The system allows companies to create new available internships.\newline R12. The system allows students to proactively search for internships by
+using keywords. \newline R13. The Recommendation system suggests available internships to students
+based on statistical analysis.\newline & D1. Student must have a reliable internet connection.\newline D2. CVs of the students are written in English.\newline D10. Information written in student’s CV truly represents his skills and goals. \newline
+\\
+        \hline
+    \end{tabular}
+\end{table}
+
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{0.4\textwidth}|p{0.4\textwidth}|}
+        \hline
+        \multicolumn{2}{|p{10cm}|}{\textbf{G3} - Companies should be able to contact the applying students in order to accept or decline their application.} \\
+        \hline
+        \textbf{Requirements} & \textbf{Domain Assumptions} \\
+        \hline
+        R1. The system allows students to sign up\newline R2. The system allows companies HR to sign up.\newline R3. The system allows registered students to log in.\newline R4. The system allows registered HRs of companies to log in.\newline R5. The system allows students to insert their CV.\newline R7. The system allows companies to create new available internships.\newline R8. The system allows companies to set a deadline for available internships.\newline R9. The system automatically prevents students from applying for expired
+internships.\newline R10. The system allows students to apply for an available internship.\newline R12. The system allows students to proactively search for internships by
+using keywords. \newline R13. The Recommendation system suggests available internships to students
+based on statistical analysis.\newline R15. The system allows companies to request students to apply for a given
+internship.\newline R16. The system allows students to accept or deny requests for internships
+received from companies.\newline  & D1. Student must have a reliable internet connection.\newline D2. CVs of the students are written in English.\newline D5. Every student by uploading their CV automatically includes a phone number and an email address for possibly being contacted by. \newline
+\\
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{0.4\textwidth}|p{0.4\textwidth}|}
+        \hline
+        \multicolumn{2}{|p{10cm}|}{\textbf{G4} - A student should be able to track and monitor the execution and the outcomes of the selection process.} \\
+        \hline
+        \textbf{Requirements} & \textbf{Domain Assumptions} \\
+        \hline
+         R1. The system allows students to sign up\newline R2. The system allows companies HR to sign up.\newline R3. The system allows registered students to log in.\newline R4. The system allows registered HRs of companies to log in.\newline R5. The system allows students to insert their CV.\newline R7. The system allows companies to create new available internships.\newline R8. The system allows companies to set a deadline for available internships.\newline R9. The system automatically prevents students from applying for expired
+internships.\newline R10. The system allows students to apply for an available internship.\newline R12. The system allows students to proactively search for internships by
+using keywords. \newline R13. The Recommendation system suggests available internships to students
+based on statistical analysis.\newline R15. The system allows companies to request students to apply for a given
+internship.\newline R16. The system allows students to accept or deny requests for internships
+received from companies.\newline R22. The system notifies students whether their application for an internship has been accepted or declined.\newline & D1. Student must have a reliable internet connection.\newline D2. CVs of the students are written in English.\newline D5. Every student by uploading their CV automatically includes a phone number and an email address for possibly being contacted by. \newline
+\\
+\hline
+    \end{tabular}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{0.4\textwidth}|p{0.4\textwidth}|}
+        \hline
+        \multicolumn{2}{|p{10cm}|}{\textbf{G5} - Companies should be able to monitor the ongoing internships along with complaints, problems and feedback by the students.} \\
+        \hline
+        \textbf{Requirements} & \textbf{Domain Assumptions} \\
+        \hline
+        R1. The system allows students to sign up\newline R2. The system allows companies HR to sign up.\newline R3. The system allows registered students to log in.\newline R4. The system allows registered HRs of companies to log in.\newline R5. The system allows students to insert their CV.\newline R7. The system allows companies to create new available internships.\newline R8. The system allows companies to set a deadline for available internships.\newline  R15. The system allows companies to request students to apply for a given
+internship.\newline R16. The system allows students to accept or deny requests for internships
+received from companies.\newline R17. The system allows companies to publish structured questionnaires on
+the internship\newline R19. The system ranks students who applied to the internship based on the
+results of the questionnaires.\newline R21. The system allows both students and companies to provide feedback about each other and to suggest potential improvements after the internship is.\newline R23. The system allows students and companies to complain about problems
+during internships.\newline  & D1. Student must have a reliable internet connection.\newline D2. CVs of the students are written in English.\newline D5. Every student by uploading their CV automatically includes a phone number and an email address for possibly being contacted by. \newline D6. The feedback provided by students are assumed to be honest and transparent about their experiences, in order not to make the matchmaking system. \newline
+\\
+        \hline
+    \end{tabular}
+\end{table}
+
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{0.4\textwidth}|p{0.4\textwidth}|}
+        \hline
+        \multicolumn{2}{|p{10cm}|}{\textbf{G6} - Companies should get informed about available student CVs based on their needs.} \\
+        \hline
+        \textbf{Requirements} & \textbf{Domain Assumptions} \\
+        \hline
+        R1. The system allows students to sign up\newline R2. The system allows companies HR to sign up.\newline R3. The system allows registered students to log in.\newline R4. The system allows registered HRs of companies to log in.\newline R5. The system allows students to insert their CV.\newline R7. The system allows companies to create new available internships.\newline & D1. Student must have a reliable internet connection.\newline D2. CVs of the students are written in English.\newline 
+\\
+
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{0.4\textwidth}|p{0.4\textwidth}|}
+        \hline
+        \multicolumn{2}{|p{10cm}|}{\textbf{G7} - Companies should be able to interview students through structured questionnaires.} \\
+        \hline
+        \textbf{Requirements} & \textbf{Domain Assumptions} \\
+        \hline
+        R1. The system allows students to sign up\newline R2. The system allows companies HR to sign up.\newline R3. The system allows registered students to log in.\newline R4. The system allows registered HRs of companies to log in.\newline R5. The system allows students to insert their CV.\newline R7. The system allows companies to create new available internships.\newline R8. The system allows companies to set a deadline for available internships.\newline  R15. The system allows companies to request students to apply for a given
+internship.\newline R17. The system allows companies to publish structured questionnaires on
+the internship\newline R19. The system ranks students who applied to the internship based on the
+results of the questionnaires.\newline & D1. Student must have a reliable internet connection.\newline D2. CVs of the students are written in English.\newline D5. Every student by uploading their CV automatically includes a phone number and an email address for possibly being contacted by. \newline D6. The feedback provided by students are assumed to be honest and transparent about their experiences, in order not to make the matchmaking system. \newline
+\\
+        \hline
+    \end{tabular}
+\end{table}
+
+\newpage
+
+\subsection{Performance Requirements}
+
+The system should guarantee a decent performance in order to be reliable for all users. In requirements, this means that the delay between interactions and responses shouldn't be greater than a couple seconds overall, assuming a stable internet connection.
+
+\subsection{Design Constraints}
+
+\subsubsection{Standards compliance}
+
+About the privacy of data, the system should rely on the guidelines provided by the General Data Protection Regulation (GDPR).
+
+\subsubsection{Hardware limitations}
+
+The hardware should rely on a Wi-Fi or Ethernet connection to be able to connect to the website.
+
+\subsection{Software System Attributes}
+
+\subsubsection{Reliability}
+
+The system must provide continuous and dependable service with minimal failures. This can be achieved by implementing automated monitoring and logging to track system health and developing thorough testing procedures to identify and resolve potential failure points before deployment.
+
+\subsubsection{Availability}
+
+The system must ensure continuous operation, minimizing downtime to maintain high availability for users, aiming for 99.95\% availability through redundancy and failover mechanisms.
+
+\subsubsection{Security}
+
+The system must protect data and operations from unauthorized access, data breaches, and other security threats, maintaining confidentiality, integrity, and availability.
+
+\subsubsection{Maintainability}
+
+The system should be easy to update, repair, and improve with minimal effort. Code should be well-documented, modular, and organized to allow straightforward modification.
+
+\subsubsection{Portability}
+
+The system should be easily deployable across multiple platforms (e.g., Windows, macOS, Linux) and environments (e.g., cloud and on-premises). The platform is developed through a web page in order to be executed on a generic web browser.
+
+\newpage
+\section{Formal Analysis using Alloy}
+
+\subsection{Signatures}
+
+\begin{lstlisting}[language=Alloy,label=lst:sigs]
+enum InternshipStatus { available, selectionProcess, ongoing, finished }
+                        
+enum ApplicationStatus { pending, selected, rejected, accepted }
+                        
+enum Rating { veryLow, low, medium, high, veryHigh}
+
+
+//----- Feedback ------------------------------
+var sig FeedbackOfStudent{
+	var reviewer: one Company,
+	var reviewed: one Student,
+	var internship: one Internship,
+}
+
+var sig FeedbackOfInternship{
+	var reviewer: one Student,
+	var internship: one Internship,
+}
+
+//--------------------------------------------
+sig Company {}
+
+sig CV{}
+
+sig University{}
+
+sig Student {
+	university: one University,
+	cv: one CV,
+}
+
+sig Internship {
+    	company: one Company,
+    	var status: one InternshipStatus,
+    	subscriptionDeadline: one Int,
+    	spots: one Int,
+    	var acceptedStudents: set Student,
+    	start: one Int,
+    	end: one Int,
+
+} {
+   	spots > 0
+    	subscriptionDeadline > 0
+   	#acceptedStudents >= 0 and 
+    	#acceptedStudents <= spots
+	
+    	subscriptionDeadline < start and start < end
+}
+
+
+sig Application {
+ 	student: one Student,
+	date: one Int,
+	internship: one Internship,
+   	var status: one ApplicationStatus,
+	questionnaire: one Questionnaire
+}{
+	date >= 0
+}
+
+
+sig Questionnaire {
+    	var rating: one Rating
+}
+
+
+//------- Facts -------------------------------------
+fact NoSameCV{
+	all disj s1, s2: Student |
+	always(s1.cv != s2.cv)
+}
+
+// Beginning status of the internship
+fact initInternship{
+	all i: Internship |
+	(i.status = available and
+	i.acceptedStudents = none)
+}
+
+//Beginning the status of the application
+fact initApplication{
+	all a: Application | 
+	(a.status = pending and
+	 a.student not in a.internship.acceptedStudents) 
+
+}
+
+fact AdmissibleApplication{
+	all a: Application |
+	(a.date <= a.internship.subscriptionDeadline)
+}
+
+// Student cannot apply more than once to the same internship
+fact NoMultipleApplicationsForSameInternship{
+	no disjoint a1, a2: Application | 
+	always(a1.student = a2.student and a1.internship = a2.internship)
+}
+
+// It is assumed that ratings about questionnaires have already been made by companies
+fact RatingNotChanging{
+	all q: Questionnaire |
+	always(q.rating' = q.rating)
+}
+
+fact AllCVAssigned{
+	CV = Student.cv
+}
+
+//There must not be questionnaires not belonging to applications
+fact AllQuestionnairesAssigned {
+    Questionnaire = Application.questionnaire
+}
+
+// Applications cannot have same questionnaire
+fact NoSameQuestionnaire{
+	all disj a1, a2 : Application |
+	always(a1.questionnaire != a2.questionnaire)
+}
+
+pred StudentSelected[a: Application]{
+	a.status = selected and always a.student in a.internship.acceptedStudents
+}
+
+pred StudentRejected[a: Application]{
+	a.status = rejected and always a.student not in a.internship.acceptedStudents
+
+}
+
+// For simplicity, only the students rated VeryHigh will be accepted for the internship
+pred SelectionProcess[a: Application]{
+	(a.questionnaire.rating = veryHigh and StudentSelected[a]) or (a.questionnaire.rating != veryHigh and StudentRejected[a] )
+}
+
+// Application starts pending and remains either rejected or accepted
+//It is assumed for simplicity that the student accepts the internship so from selected, applications goes automatically in accepted status
+fact ApplicationStatusDevelopment{
+	all a: Application | 
+	 always((a.status = pending implies after (a.internship.status = selectionProcess and SelectionProcess[a]))
+	 and (a.status = rejected implies after a.status = rejected)
+ 	 and (a.status = selected implies after (a.status = accepted))
+  	 and (a.status = accepted implies after a.status = accepted))
+} 
+
+
+// Internship status starts available, turns in "selectionProcess", then ongoing and lastly finishes
+fact InternshipStatusDevelopment{
+	all i: Internship |
+	always ((i.status = available implies eventually i.status = selectionProcess)
+	and(i.status = selectionProcess implies after ((i.acceptedStudents = none and i.status=finished) or i.status = ongoing))
+	and (i.status = ongoing implies after i.status = finished)
+	and (i.status = finished implies after i.status = finished))
+}
+
+
+pred overlappedInternships[i1, i2: Internship]{
+	(i2.end >= i1.start and i2.end <= i1.end) or
+	(i2.start >= i1.start and i2.start <= i1.end)
+}
+
+fact StudentNoTwoInternshipsAtTheSameTime{
+	all disj a1, a2: Application |
+	(((a1.student = a2.student and 
+	   a1.internship != a2.internship and overlappedInternships[a1.internship, a2.internship])) 
+	   implies eventually (a1.status = rejected and a2.status = selected))
+}
+
+
+//-------
+
+
+fact NotMultipleFeedbacksPerStudent{
+	no disj f1, f2: FeedbackOfInternship |	
+	(f1.internship = f2.internship and f1.reviewer = f2.reviewer)
+}
+
+
+
+//-----------
+fact NoAcceptedNoFeedbackOfInternship{
+	all s: Student | all i: Internship |
+	always ((s not in i.acceptedStudents or i.status != finished) implies no f: FeedbackOfInternship | 
+	(f.reviewer = s and f.internship = i)) 
+}
+
+
+fact NoAcceptedNoFeedbackOfStudent{
+	all s: Student | all i: Internship |
+	always((s not in i.acceptedStudents or i.status != finished) implies no f: FeedbackOfStudent | 
+	(f.reviewer = i.company and f.internship = i and f.reviewed = s)) 
+}
+
+
+fact WhenInternshipFinishedDoFeedbackOfInternship{
+	all i: Internship | all disj s: Student |
+	always (i.status = finished and s in i.acceptedStudents implies
+	one f: FeedbackOfInternship | (f.reviewer = s and f.internship = i))
+}
+
+fact WhenInternshipFinishedDoFeedbackOfStudent{
+	all i: Internship | all disj s: Student |
+	always (i.status = finished and s in i.acceptedStudents implies
+	one f: FeedbackOfStudent | (f.reviewer = i.company and f.internship = i and f.reviewed = s))
+}
+
+fact OnlyWhenFinished{
+	all f: FeedbackOfStudent |
+	f.internship.status = finished
+
+}
+
+\end{lstlisting}
+
+\newpage
+
+\subsection{Examples}
+
+\subsubsection{First example}
+
+\begin{lstlisting}[language=Alloy,label=lst:show1]
+// Verifying that students with veryHigh rating are accepted for the internship
+pred show [] {
+	#Student = 2
+	#Company = 1
+	#Internship = 1
+	#Application = 2
+	one q1: Questionnaire | (q1.rating = veryHigh)
+	one i: Internship | i.spots = 1
+}
+
+run show for 10
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{RASD/files/AlloyTests/ok1.png}
+    \caption*{State 0}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{RASD/files/AlloyTests/ok2.png}
+    \caption*{State 1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{RASD/files/AlloyTests/ok3.png}
+    \caption*{State 2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{RASD/files/AlloyTests/ok4.png}
+    \caption*{State 3}
+\end{figure}
+
+\newpage
+
+\subsubsection{Second example}
+
+\begin{lstlisting}[language=Alloy,label=lst:show2]
+// Verifying that internships with not enough students don't start
+pred show [] {
+	#Student = 1
+	#Company = 1
+	#Internship = 1
+	#Application = 1
+	some a: Application | a.status = pending and after a.status = rejected
+	one i: Internship | i.spots = 1
+}
+
+run show for 10
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.75\linewidth]{RASD/files/AlloyTests/no1.png}
+    \caption*{State 0}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.75\linewidth]{RASD/files/AlloyTests/no2.png}
+    \caption*{State 1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.75\linewidth]{RASD/files/AlloyTests/no3.png}
+    \caption*{State 2}
+\end{figure}
+
+\newpage
+
+\subsubsection{Third example}
+
+\begin{lstlisting}[language=Alloy,label=lst:show3]
+// Verifying that there can be a more complex situation, with students without applications and internships without applications
+pred show [] {
+	#Student = 2
+	#Company = 1
+	#Internship = 2
+	#Application = 1
+
+
+	some a: Application | a.status = pending and after a.status = selected
+}
+
+run show for 10
+
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{RASD/files/AlloyTests/complex1.png}
+    \caption*{State 0}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.75\linewidth]{RASD/files/AlloyTests/complex2.png}
+    \caption*{State 1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.75\linewidth]{RASD/files/AlloyTests/complex3.png}
+    \caption*{State 2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.75\linewidth]{RASD/files/AlloyTests/complex4.png}
+    \caption*{State 3}
+\end{figure}
+
+\newpage
+
+\subsubsection{Assertions}
+\begin{itemize}
+    \item{Assertion1: Feedback Only After the internship has ended}
+    \begin{lstlisting}[language=Alloy,label=lst:show4]
+    assert FeedbackCreatedAfterInternshipFinished {
+        all f: FeedbackOfStudent | f.internship.status = finished
+        all f: FeedbackOfInternship | f.internship.status = finished
+        }
+    check FeedbackCreatedAfterInternshipFinished for 10
+    \end{lstlisting}
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=.75\linewidth]{RASD/files/AlloyTests/assert1.png}
+    \end{figure}
+
+    \item{Assertion2: No Overlapping Internships for a Single Student}
+    \begin{lstlisting}[language=Alloy,label=lst:show5]
+    assert NoOverlappingInternshipsForStudent {
+      all disj i1, i2: Internship, s: Student |
+        (s in i1.acceptedStudents and s in i2.acceptedStudents) implies
+        not overlappedInternships[i1, i2]
+    }
+    check NoOverlappingInternshipsForStudent for 10
+    \end{lstlisting}
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=.75\linewidth]{RASD/files/AlloyTests/assert2.png}
+    \end{figure}
+
+     \item{Assertion3: No Applications After Subscription Deadline}
+    \begin{lstlisting}[language=Alloy,label=lst:show6]
+    assert ApplicationsBeforeDeadline {
+      all a: Application |
+        a.date <= a.internship.subscriptionDeadline
+    }
+    check ApplicationsBeforeDeadline for 10
+    \end{lstlisting}
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=.75\linewidth]{RASD/files/AlloyTests/assert3.png}
+    \end{figure}   
+
+     \item{Assertion4: No Multiple Applications for Same Internship by One Student}
+    \begin{lstlisting}[language=Alloy,label=lst:show7]
+    assert NoMultipleApplicationsBySameStudent {
+      all disj a1, a2: Application |
+        (a1.student = a2.student and a1.internship = a2.internship) implies no a1
+    }
+    check NoMultipleApplicationsBySameStudent for 10
+    \end{lstlisting}
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=.75\linewidth]{RASD/files/AlloyTests/assert4.png}
+    \end{figure} 
+
+     \item{Assertion5: No Student is Accepted Into More Than One Internship at the Same Time}
+    \begin{lstlisting}[language=Alloy,label=lst:show8]
+    assert StudentAcceptedToOneInternshipAtATime {
+      all disj i1, i2: Internship, s: Student |
+        (s in i1.acceptedStudents and s in i2.acceptedStudents) implies not overlappedInternships[i1, i2]
+    }
+    check StudentAcceptedToOneInternshipAtATime for 10
+    \end{lstlisting}
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=.75\linewidth]{RASD/files/AlloyTests/assert5.png}
+    \end{figure} 
+    
+
+
+\end{itemize}
+
+
+
+
+\newpage
+
+\section{Effort Spent}
+\begin{table}[H]
+    \centering
+    \begin{minipage}{.45\linewidth}
+        \centering
+        \begin{tabular}{| p{1.5cm} | p{3cm} |}
+            \hline
+            \multicolumn{2}{|c|}{\textbf{Denis Sanduleanu}} \\
+            \hline
+            \hline
+            \textbf{Chapter} & \textbf{Effort (in hours)} \\
+            \hline
+            1 & 3 \\
+            \hline
+            2 & 7 \\
+            \hline
+            3 & 7.5 \\
+            \hline
+            4 & 16.5 \\
+            \hline
+        \end{tabular}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}{.45\linewidth}
+        \centering
+        \begin{tabular}{| p{1.5cm} | p{3cm} |}
+            \hline
+            \multicolumn{2}{|c|}{\textbf{Francesco Gangi}} \\
+            \hline
+            \hline
+            \textbf{Chapter} & \textbf{Effort (in hours)} \\
+            \hline
+            1 & 3.5 \\
+            \hline
+            2 & 7 \\
+            \hline
+            3 & 8 \\
+            \hline
+            4 & 7.5 \\
+            \hline
+        \end{tabular}
+    \end{minipage}
+\end{table}
+
+\newpage
+
+\section{References}
+
+\begin{itemize}
+    \item Diagrams made with: \textbf{Diagrams.net}
+    \item Mock-ups made with: \textbf{Figma}
+    \item Alloy models made, runned and checked with: \textbf{Alloy Analyzer}
+\end{itemize}
+
+
+\end{document}
